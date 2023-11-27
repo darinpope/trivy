@@ -1,0 +1,12 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: action
+name: trivy-fs
+runs:
+  using: composite
+  steps:
+    - id: trivy-fs
+      name: trivy-fs
+      uses: docker://darinpope/trivy:0.47.0
+      shell: sh
+      run: |
+        trivy fs .
