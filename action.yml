@@ -1,12 +1,28 @@
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: action
-name: trivy-fs
+name: 'Trivy'
+description: 'Trivy'
+
+inputs:
+  command:
+    description: 'Scanning command'
+    required: true
+  scan-target:
+    description: 'The item to scan'
+    required: true
+  severity:
+    description: 'Severities of security issues to be displayed'
+    default: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+  format:
+    description: 'format (table,json,template,sarif,cyclonedx,spdx,spdx-json,github,cosign-vuln)'
+    default: table
+  
 runs:
   using: composite
   steps:
-    - id: trivy-fs
-      name: trivy-fs
+    - id: trivy
+      name: trivy
       uses: docker://darinpope/trivy:0.47.0
       shell: sh
       run: |
-        trivy fs .
+        trivy ${{ inputs.command }} --severity ${{ inputs.severity }} --format ${{ inputs.format }} ${{ inputs.scan-target }}
