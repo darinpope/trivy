@@ -1,15 +1,12 @@
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: action
-name: 'Trivy'
-description: 'Trivy'
+name: 'Trivy - Scan local filesystem'
+description: 'Trivy - Scan local filesystem'
 
 inputs:
-  command:
-    description: 'Scanning command'
-    required: true
-  scan-target:
-    description: 'The item to scan'
-    required: true
+  path:
+    description: 'The path to scan'
+    default: .
   severity:
     description: 'Severities of security issues to be displayed'
     default: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
@@ -21,8 +18,8 @@ runs:
   using: composite
   steps:
     - id: trivy
-      name: trivy
+      name: Scan local filesystem with Trivy
       uses: docker://darinpope/trivy:0.47.0
       shell: sh
       run: |
-        trivy ${{ inputs.command }} --severity ${{ inputs.severity }} --format ${{ inputs.format }} ${{ inputs.scan-target }}
+        trivy fs --severity ${{ inputs.severity }} --format ${{ inputs.format }} ${{ inputs.path }}
